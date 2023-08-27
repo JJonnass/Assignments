@@ -3,31 +3,38 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 
 export default function App() {
-  const [num1, setNum1] = useState('');
-  const [num2, setNum2] = useState('');
-  const [result, setResult] = useState('');
+  const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 100) + 1);
+  const [guess, setGuess] = useState('');
+  const [message, setMessage] = useState('Guess a number between 1-100');
+  const [guessCount, setGuessCount] = useState(0);
 
-  const plus = () => {
-    const sum = parseFloat(num1) + parseFloat(num2);
-    setResult(sum.toString());
+  const guessResult = () => {
+    const userGuess = parseInt(guess, 10);
+    if (userGuess < randomNum) {
+      setMessage("Your guess " + userGuess + " is too low");
+      setGuessCount(guessCount + 1);
+    } else if (userGuess > randomNum) {
+      setMessage("Your guess " + userGuess + " is too high");
+      setGuessCount(guessCount + 1);
+    } else {
+      setMessage("You guessed the number in " + guessCount + " guesses");
+      setGuessCount(0);
+      setRandomNum(Math.floor(Math.random() * 100) + 1);
+    }
+    setGuess('');
   };
-  const minus = () => {
-    const difference = parseFloat(num1) - parseFloat(num2);
-    setResult(difference.toString());
-  }
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
-      <TextInput style={{ width: 200, borderColor: "gray", borderWidth: 1 }} onChangeText={num1 => setNum1(num1)} keyboardType='numeric' />
-      <TextInput style={{ width: 200, borderColor: "gray", borderWidth: 1 }} onChangeText={num2 => setNum2(num2)} keyboardType='numeric' />
-      <View style={styles.container2}>
-        <Button style={styles.container2} onPress={plus} title=" + " />
-        <Button style={styles.container2} onPress={minus} title=" - " />
-      </View>
+      <Text>{message}</Text>
+      <TextInput
+        style={{ width: 50, marginTop: 10, borderColor: 'gray', borderWidth: 1, textAlign: 'center' }}
+        onChangeText={(guess) => setGuess(guess)}
+        keyboardType='numeric'
+      />
+      <Button style={styles.button} title="Make Guess" onPress={guessResult} />
       <StatusBar style="auto" />
     </View>
-
 
   );
 }
@@ -39,8 +46,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  container2: {
-    flexDirection: 'row',
+  button: {
+    width: 100,
+    color: 'white',
+    backgroundColor: 'ocean blue',
   }
 
 });
